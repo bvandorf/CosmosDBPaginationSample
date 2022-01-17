@@ -3,7 +3,7 @@ using PaginationTest.Shared.Models;
 using System;
 using System.Linq;
 
-namespace PaginationTest.DemoDataSet.DataBase
+namespace PaginationTest.DemoDataSet
 {
     public class DataBase : IDataBase
     {

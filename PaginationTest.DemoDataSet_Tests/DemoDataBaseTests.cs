@@ -1,9 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PaginationTest.DemoDataSet;
-using PaginationTest.DemoDataSet.DataBase;
 using PaginationTest.Shared.DataBase;
 using PaginationTest.Shared.Models;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace PaginationTest.DemoDataSet_Tests

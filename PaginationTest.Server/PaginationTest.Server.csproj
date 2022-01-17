@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PaginationTest.CosmonautDataSet\PaginationTest.CosmonautDataSet.csproj" />
     <ProjectReference Include="..\PaginationTest.DemoDataSet\PaginationTest.DemoDataSet.csproj" />
     <ProjectReference Include="..\PaginationTest.Shared\PaginationTest.Shared.csproj" />
   </ItemGroup>

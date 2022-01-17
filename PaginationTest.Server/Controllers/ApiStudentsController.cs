@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PaginationTest.Shared;
+using PaginationTest.Shared.DataBase;
 using PaginationTest.Shared.Models;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,15 +14,14 @@ namespace PaginationTest.Server.Controllers
     public class ApiStudentsController : ControllerBase
     {
         private readonly ILogger<ApiStudentsController> _logger;
-        readonly DemoDataSet.DataBase.DataBase dataBase;
+        readonly IDataBase _dataBase;
 
-        public ApiStudentsController(ILogger<ApiStudentsController> logger)
+        public ApiStudentsController(ILogger<ApiStudentsController> logger, IDataBase dataBase)
         {
             logger.LogInformation("ApiStudentsController starting");
 
             _logger = logger;
-
-            dataBase = new DemoDataSet.DataBase.DataBase();
+            _dataBase = dataBase;
 
             _logger.LogInformation("ApiStudentsController started");
         }
@@ -33,8 +33,8 @@ namespace PaginationTest.Server.Controllers
             _logger.LogInformation($"GetStudentsNumSize page {page} pageSize {pageSize}");
 
 
-            var students = dataBase.StudentsQuery(page, pageSize).ToList(); 
-            var totalCount = dataBase.StudentsCount(); 
+            var students = _dataBase.StudentsQuery(page, pageSize).ToList(); 
+            var totalCount = _dataBase.StudentsCount(); 
             var pager = new NumSizePager(totalCount, page, pageSize);
 
             var response = new NumSizePagedData<Student>
@@ -53,7 +53,7 @@ namespace PaginationTest.Server.Controllers
         {
             _logger.LogInformation($"GetStudentsNextPrev continuationToken {continuationToken} pageSize {pageSize}");
 
-            var students = dataBase.StudentsToPagedList(continuationToken, pageSize);
+            var students = _dataBase.StudentsToPagedList(continuationToken, pageSize);
 
             var response = new NextPrevPagedData<Student>
             {
