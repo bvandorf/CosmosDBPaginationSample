@@ -1,4 +1,4 @@
-﻿namespace PaginationTest.Shared
+﻿namespace PaginationTest.Shared.Models
 {
     public class NextPrevPager
     {

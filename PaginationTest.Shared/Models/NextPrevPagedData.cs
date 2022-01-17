@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace PaginationTest.Shared
+namespace PaginationTest.Shared.Models
 {
     public class NextPrevPagedData<T>
     {

@@ -1,7 +1,7 @@
 ﻿using Cosmonaut.Attributes;
 using Newtonsoft.Json;
 
-namespace PaginationTest.Shared
+namespace PaginationTest.Shared.Models
 {
     [CosmosCollection("students")]
     public class Student

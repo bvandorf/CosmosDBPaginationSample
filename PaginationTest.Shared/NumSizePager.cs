@@ -1,5 +1,4 @@
 ﻿using System;
-using Newtonsoft.Json;
 
 namespace PaginationTest.Shared
 {
@@ -9,10 +8,26 @@ namespace PaginationTest.Shared
 
         public NumSizePager(int totalItems, int? page, int pageSize = 10)
         {
+            if (page < 0)
+                page = null;
+
+            if (pageSize < 1)
+            {
+                Success = false;
+                return;
+            }
+
+            if (totalItems < 0)
+            {
+                Success = false;
+                return;
+            }
+
             var totalPages = (int)Math.Ceiling((decimal)totalItems / (decimal)pageSize);
             var currentPage = page ?? 1;
             var startPage = currentPage - 5;
             var endPage = currentPage + 4;
+
             if (startPage <= 0)
             {
                 endPage -= (startPage - 1);
@@ -35,6 +50,7 @@ namespace PaginationTest.Shared
             EndPage = endPage;
         }
 
+        public bool Success { get; set; } = true;
         public int TotalItems { get; set; }
         public int CurrentPage { get; set; }
         public int PageSize { get; set; }

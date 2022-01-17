@@ -1,6 +1,9 @@
-﻿@using System.Net
-@using PaginationTest.Shared
-@page "/nextprevfetchdata"
+﻿@page "/nextprevfetchdata"
+
+@using System.Net
+@using Microsoft.Extensions.Logging
+@using PaginationTest.Shared.Models
+
 @inject HttpClient Http
 
 <h1>Next and Previous Button Pagination Example</h1>
@@ -18,21 +21,30 @@ else
             @if (currentPageNumber > 1)
             {
                 <li class="page-item">
-                    <a class="page-link" href="javascript:void(0)" onclick=@(async () => await LoadDataAsync(continuationTokens[1], _pageSize, 1))>First</a>
+                    <a class="page-link" href="#" 
+                       @onclick="@(() => LoadDataAsync(continuationTokens[1], _pageSize, 1))"
+                       @onclick:preventDefault="true"
+                       @onclick:stopPropagation="true">First</a>
                 </li>
             }
 
             @if (currentPageNumber > 1)
             {
                 <li class="page-item">
-                    <a class="page-link" href="javascript:void(0)" onclick=@(async () => await LoadDataAsync(continuationTokens[currentPageNumber - 1], _pageSize, currentPageNumber - 1))>Previous</a>
+                    <a class="page-link" href="#" 
+                       @onclick="@(() => LoadDataAsync(continuationTokens[currentPageNumber - 1], _pageSize, currentPageNumber - 1))"
+                       @onclick:preventDefault="true"
+                       @onclick:stopPropagation="true">Previous</a>
                 </li>
             }
 
             @if (_students.Pager.HasNextPage)
             {
                 <li class="page-item">
-                    <a class="page-link" href="javascript:void(0)" onclick=@(async ()=>await LoadDataAsync(_students.Pager.ContinuationToken, _pageSize, currentPageNumber + 1))>Next</a>
+                    <a class="page-link" href="#" 
+                       @onclick="@(() => LoadDataAsync(_students.Pager.ContinuationToken, _pageSize, currentPageNumber + 1))"
+                       @onclick:preventDefault="true"
+                       @onclick:stopPropagation="true">Next</a>
                 </li>
             }
         </ul>
@@ -58,30 +70,38 @@ else
 
 }
 
-@functions {
+@code {
+
     NextPrevPagedData<Student> _students;
     int currentPageNumber = 1;
     int _pageSize = 10;
     IDictionary<int, string> continuationTokens = new Dictionary<int, string>();
 
-    protected override async Task OnInitAsync()
+    protected override async Task OnInitializedAsync()
     {
         await LoadDataAsync(String.Empty, _pageSize);
     }
 
     protected async Task LoadDataAsync(string continuationToken, int pageSize, int pageNum = 1)
     {
+        var appSettings = new AppSettings();
+
         if (continuationTokens.ContainsKey(pageNum))
         {
+            var url = $"{appSettings.BackedApi.Hostname}/api/students/nextprev?continuationToken={WebUtility.UrlEncode(continuationTokens[pageNum])}&pageSize={pageSize}";
 
-            _students = await Http.GetJsonAsync<NextPrevPagedData<Student>>($"api/students/nextprev?continuationToken={WebUtility.UrlEncode(continuationToken)}&pageSize={pageSize}");
+            _students = await Http.GetFromJsonAsync<NextPrevPagedData<Student>>(url);
             _pageSize = pageSize;
             currentPageNumber = pageNum;
+
             return;
         }
 
         currentPageNumber = pageNum;
-        _students = await Http.GetJsonAsync<NextPrevPagedData<Student>>($"api/students/nextprev?continuationToken={WebUtility.UrlEncode(continuationToken)}&pageSize={pageSize}");
+
+        var url2 = $"{appSettings.BackedApi.Hostname}/api/students/nextprev?continuationToken={WebUtility.UrlEncode(continuationToken)}&pageSize={pageSize}";
+
+        _students = await Http.GetFromJsonAsync<NextPrevPagedData<Student>>(url2);
         _pageSize = pageSize;
 
         continuationTokens[currentPageNumber] = continuationToken;
